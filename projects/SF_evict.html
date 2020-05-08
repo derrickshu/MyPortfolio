@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Eviction in San Francisco</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
+    
+    <!-- CSS styles for the web page -->
+    <style type="text/css">
+        html, body, #map {
+                height: 100%;
+                padding: 0;
+                margin: 0;
+        }
+        
+        #cartocss {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        #sql {
+            position: absolute;
+            top: 20px;
+            right: 292px;
+        }
+        .layer_selector {
+            background: #1E1E1E;
+            border-radius: 1px;
+            font-family: "Proxima Nova 101", Helvetica, sans-serif;
+            color: #FFF;
+            padding: 0;
+            width: 275px;
+        }
+
+        .layer_selector > p {
+            padding: 0px 0px 0px 10px;
+        }
+
+        .layer_selector ul {
+            padding: 0; margin: 0;
+            list-style-type: none;
+        }
+        
+        .layer_selector li {
+            padding: 15px 15px 10px 10px;
+            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            font-size: 12px;
+            color: #D1D1D1;
+            cursor: pointer;
+        }
+        
+        .layer_selector li:not(:last-child) {
+            border-bottom: 1px dashed #828282;
+        }
+        
+        .layer_selector li:hover {
+            background-color: #000;
+            cursor: pointer;
+        }
+        
+        .layer_selector li.sql_selected,
+        .layer_selector li.cartocss_selected {
+            background-color: #000;
+        }
+    
+        .legend_template {
+            height: auto;
+            width: auto;
+        }
+        
+        div#title {
+        position: fixed;
+        width: auto;
+        left: 50px;
+        top: -5px;
+        color: #FFF;
+        font-family: "Proxima Nova 101", Helvetica, sans-serif;
+      }
+        
+        div#sidebar {
+        position: fixed;
+        width: 275px;
+        right: 20px;
+        top: 310px;
+        color: #FFF;
+        font-family: "HelveticaNeue-Thin", Helvetica, sans-serif;
+        font-size: 10px;
+        }
+        
+    </style>
+    <style type="cartocss/html" id="simple">
+    
+    /** simple visualization */
+
+        #eviction_notices{
+          marker-fill-opacity: 0.9;
+          marker-line-color: #FFF;
+          marker-line-width: 0;
+          marker-line-opacity: 1;
+          marker-placement: point;
+          marker-type: ellipse;
+          marker-width: 3;
+          marker-fill: #51D0DB;
+          marker-allow-overlap: true;
+        }    
+    
+    </style>
+    <style type="cartocss/html" id="simple_alt">
+    
+    /** simple_alt visualization */
+
+        #eviction_notices{
+          marker-fill-opacity: 0.9;
+          marker-line-color: #3CA861;
+          marker-line-width: 3;
+          marker-line-opacity: 0.5;
+          marker-placement: point;
+          marker-type: ellipse;
+          marker-width: 5;
+          marker-fill: #53E886;
+          marker-allow-overlap: true;
+        }    
+    
+    </style>
+    <style type="cartocss/html" id="simple_alt_two">
+    
+    /** simple_alt_two visualization */
+
+        #eviction_notices{
+          marker-fill-opacity: 0.9;
+          marker-line-color: #FFD63E;
+          marker-line-width: 3;
+          marker-line-opacity: 0.5;
+          marker-placement: point;
+          marker-type: ellipse;
+          marker-width: 5;
+          marker-fill: #FFA533;
+          marker-allow-overlap: true;
+        }    
+    
+    </style> 
+    <style type="cartocss/html" id="intensity">
+    
+    /** intensity visualization */
+
+        #eviction_notices{
+          marker-fill: #FFCC00; 
+          marker-width: 6; 
+          marker-line-color: #FFF; 
+          marker-line-width: 0; 
+          marker-line-opacity: 1; 
+          marker-fill-opacity: 0.9; 
+          marker-comp-op: multiply; 
+          marker-type: ellipse; 
+          marker-placement: point; 
+          marker-allow-overlap: true; 
+          marker-clip: false; 
+          marker-multi-policy: largest; 
+        }
+        
+    </style>
+    <style type="cartocss/html" id="choropleth">
+        
+    /** choropleth visualization */
+
+        #neighborhoods{
+          polygon-fill: #FFFFB2;
+          polygon-opacity: 0.75;
+          line-color: #FFF;
+          line-width: 0.5;
+          line-opacity: 1;
+        }
+        #neighborhoods [ count <= 4055] {
+           polygon-fill: #e31a1c;
+        }
+        #neighborhoods [ count <= 2000] {
+           polygon-fill: #fc4e2a;
+        }
+        #neighborhoods [ count <= 1000] {
+           polygon-fill: #fd8d3c;
+        }
+        #neighborhoods [ count <= 500] {
+           polygon-fill: #feb24c;
+        }
+        #neighborhoods [ count <= 200] {
+           polygon-fill: #fed976;
+        }
+        #neighborhoods [ count <= 100] {
+           polygon-fill: #ffffb2;
+        }
+        #neighborhoods [ count <= 10] {
+           polygon-fill: #ffffff;
+           polygon-opacity: 0;
+        }  
+    </style>
+      
+    <style type="cartocss/html" id="torque">
+    
+    /** torque visualization */
+
+        Map {
+        -torque-frame-count:216;
+        -torque-animation-duration:216;
+        -torque-time-attribute:"file_date";
+        -torque-aggregation-function:"count(cartodb_id)";
+        -torque-resolution:2;
+        -torque-data-aggregation:linear;
+        }
+
+        #eviction_notices{
+          comp-op: lighter;
+          marker-fill-opacity: 0.9;
+          marker-type: ellipse;
+          marker-width: 5;
+          marker-fill: #51D0DB;
+        }
+        #eviction_notices[frame-offset=1] {
+         marker-width: 5;
+         marker-fill-opacity:0.25; 
+        } 
+    
+    </style>
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="title">
+      <h1>Eviction Notices in San Francisco, CA (1997-2015)</h1>
+    </div>
+    <div id="sidebar">
+      <p>In recent years, the landscape of eviction in San Francisco has changed dramatically. The northward push of Big Tech from Silicon Valley since the early 2010s has resulted in a marked increase in the number of eviction notices served to San Francisco residents. In 2014 alone, 2,120 evictions notices were filed with the city's Rent Board, a 54.7% increase from 2010. The Ellis Act, a piece of legislation giving tenants the unrestricted right to evict residents in order to "go out of business", has been particularly destructive. This map, created using the <a href="https://docs.cartodb.com/cartodb-platform/cartodb-js/" style="color: #51D0DB">CartoDB.js</a> library, attempts to bring multiple visualizations of San Francisco's eviction epidemic together. Data for this project comes courtesy of <a href="https://data.sfgov.org/" style="color: #51D0DB">SF OpenData</a> and the <a href="https://www.census.gov/" style="color: #51D0DB">U.S. Census Bureau</a>. Check out the <a href="http://www.antievictionmap.com/" style="color: #51D0DB">Anti-Eviction Mapping Project</a> for more maps and graphics.</p>    
+    </div>  
+    <div id="cartocss" class="layer_selector">
+            <p>CHOOSE A VISUALIZATION</p>
+            <ul>
+                <li data="simple" data-type="cartocss" id="point">All Eviction Notices Since 1997 (Default)</li>
+                <li data="simple_alt" data-type="cartocss" id="current">All Eviction Notices in 2015</li>
+                <li data="simple_alt_two" data-type="cartocss" id="ellis">All Ellis Act Eviction Notices</li>
+                <li data="choropleth" data-type="cartocss" id="choro">Eviction Notices by Neighborhood</li>
+                <li data="intensity" data-type="cartocss" id="heat">A Heat Map of Eviction Notices</li>
+                <li data="torque" data-type="cartocss" id="torqueviz">A Timelapse Map of Eviction Notices</li>
+            </ul>
+        </div>
+
+    <!-- include cartodb.js library -->
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+      
+    <!-- infowindow script -->
+    <script type="infowindow/html" id="infowindow_template"> 
+    <div class="cartodb-popup v2" style="font-family: 'Open Sans'">
+        <a href="#close" class="cartodb-popup-close-button close">x</a>
+           <div class="cartodb-popup-content-wrapper">
+              <div class="cartodb-popup-header">
+        <h4 style="width: auto; margin-top: -5px; padding: 10px; text-align:left; color:white; font-weight: normal; background:#000; text-transform: none; font-size: 15px">{{nhood}}</h4><br></div>
+           <div class="cartodb-popup-content">
+              <h4 style="color: #284a59; text-transform: none; font-size: 12px; font-weight: normal">Number of Evictions Since 1997</h4>
+              <p style="font-size: 10px; color: #000; margin-top: 3px;">{{count}}</p>
+              <h4 style="color: #284a59; text-transform: none; font-size: 12px; font-weight: normal">Median Home Value – 2010</h4>
+              <p style="font-size: 10px; color: #000; margin-top: 3px;">${{price}}</p>
+              <h4 style="color: #284a59; text-transform: none; font-size: 12px; font-weight: normal">Population – 2010</h4>
+              <p style="font-size: 10px; color: #000; margin-top: 3px;">Asian {{asian}}%</p>
+              <p style="font-size: 10px; color: #000; margin-top: 3px;">Black {{black}}%</p>
+              <p style="font-size: 10px; color: #000; margin-top: 3px;">Latino {{latino}}%</p>
+              <p style="font-size: 10px; color: #000; margin-top: 3px;">White {{white}}%</p>
+              <p style="font-size: 10px; color: #000; margin-top: 3px;">Two or More Races {{mixed}}%</p>
+            </div>
+          </div>
+          <div class="cartodb-popup-tip-container"></div>
+        </div>
+    </script> 
+      
+    <!-- legends script -->
+        <script type='html' id="choro_legend_template" class="legend_template">
+ 
+            <div class='cartodb-legend density'>  
+            <ul>
+              <li class="min" style="color: #284a59">
+              Number of Evictions Since 1997 (by Neighborhood)
+              </li>
+
+              <li class="graph leg" style="border-radius: 0; border:none">
+              <div class="colors">
+                <div class="quartile" style="background-color:#ffffb2; width: 20px"></div>
+                <div class="quartile" style="background-color:#fed976; width: 20px"></div>
+                <div class="quartile" style="background-color:#feb24c; width: 20px"></div>
+                <div class="quartile" style="background-color:#fd8d3c; width: 20px"></div>
+                <div class="quartile" style="background-color:#fc4e2a; width: 20px"></div>
+                <div class="quartile" style="background-color:#e31a1c; width: 20px"></div>
+              </div>
+                <div class="colors" style="font-weight:normal; text-align: center">
+                <div class="quartile" style="padding-top: 5px">10-100</div>
+                <div class="quartile" style="padding-top: 5px">100-200</div>
+                <div class="quartile" style="padding-top: 5px">200-500</div>
+                <div class="quartile" style="padding-top: 5px">500-1k</div>
+                <div class="quartile" style="padding-top: 5px">1k-2k</div>
+                <div class="quartile" style="padding-top: 5px">2k-4k</div>
+              </div>
+              </li>
+            </ul>
+            </div>
+            
+      </script>
+      
+      <script type='html' id="heat_legend_template" class="legend_template">
+        <div class='cartodb-legend intensity'>	
+            <ul>
+                <li style="color: #284a59"> Relative Density of Eviction </li><br>
+                <li class="min">
+                Low (2 or fewer)
+                </li>
+                <li class="max">
+                High (10 or more)
+                </li>
+                <li class="graph" style="background: #FFCC00;background: -moz-linear-gradient(left, #FFCC00 0%, #ff4200     100%);background: -webkit-gradient(linear, left top, right top, color-stop(0%,#FFCC00), color-stop(100%,#ff4200));background: -webkit-linear-gradient(left, #FFCC00 0%,#ff4200 100%);background: -o-linear-gradient(left, #FFCC00 0%,#ff4200 100%);background: -ms-linear-gradient(left, #FFCC00 0%,#ff4200 100%)background: linear-gradient(to right, #FFCC00 0%,#ff4200 100%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFCC00', endColorstr='#ff4200',GradientType=1 );background-image: -ms-linear-gradient(left, #FFCC00 0%,#ff4200 100%)">
+                </li>
+            </ul>
+        </div>
+      </script>
+    
+    <!-- Drop your code between the script tags below! -->
+    <script>
+    window.onload = function (){
+        
+        // Set the table name
+        
+        var evictionTableName = "eviction_notices";
+        var nhoodsTableName = "neighborhoods";
+        
+        // Put layer data into a JS object
+        
+        var layerSource = {
+            user_name: 'pziegler', 
+            type: 'cartodb',
+            sublayers: [{ 
+              sql: "SELECT * FROM " + evictionTableName, // all eviction notices
+              cartocss: $("#simple").text() // simple visualization
+            }, {
+              sql: "SELECT * FROM " + nhoodsTableName,
+              cartocss: $("#choropleth").text(),
+              interactivity: "cartodb_id"
+            }]
+          }
+        
+        var torqueSource = {
+            type: 'torque',
+            options: {
+              user_name: 'pziegler', // replace with your user name
+              table_name: 'eviction_notices',
+              cartocss: $("#torque").text()
+            }
+          }
+        
+        // Create legends for the different layers
+        
+        // Choropleth legend
+        
+        var choroLegend = new cdb.geo.ui.Legend({
+            type: "custom",
+            show_title: false,
+            title: "",
+            template: $('#choro_legend_template').html(),
+            visible: true
+            });
+        
+        // Heatmap legend
+        
+        var heatLegend = new cdb.geo.ui.Legend({
+            type: "custom",
+            show_title: false,
+            title: "",
+            template: $('#heat_legend_template').html(),
+            visible: true
+        });
+        
+        // Stylize each legend as stacked to get everything to fit neatly
+        var choroStacked = new cdb.geo.ui.StackedLegend({
+           legends: [choroLegend]
+         });
+        
+        var heatStacked = new cdb.geo.ui.StackedLegend({
+           legends: [heatLegend]
+         });
+        
+        // Set the map options
+        
+        var mapOptions = {
+            center: [37.7749, -122.4194],
+            zoom: 13
+        }
+        
+        // Instantiate map on specified DOM element
+        var map = new L.Map('map', mapOptions);
+
+        // Add a basemap to the map object just created
+        L.tileLayer('https://a.tiles.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}.png?access_token={token}', {
+            attribution: 'Mapbox',
+            subdomains: ['a','b','c','d'],
+            token: 'pk.eyJ1IjoicHppZWdsZXIiLCJhIjoiY2ltMHo3OGRxMDh0MXR5a3JrdHNqaGQ0bSJ9.KAFBMeyysBLz4Ty-ltXVQQ'
+        }).addTo(map);
+        
+        // create the torque layer when a user clicks the timelapse button
+        $("#torqueviz").on('click', function(){
+            cartodb.createLayer(map, torqueSource)
+                .addTo(map)
+                .done(function(layer){
+                    var torqueLayer = layer;
+                    // pause animation at last frame
+                    torqueLayer.on('change:time', function(changes) {
+                      if (changes.step === torqueLayer.provider.getSteps() - 1) {
+                        torqueLayer.pause();
+                      }})
+                    torqueLayer.on('load', function() {
+                        torqueLayer.pause();
+                    });
+                    // when a user clicks on the other buttons, remove the torque layer
+                    $("#choro").on('click', function(){
+                        torqueLayer.remove();
+                    })
+                    
+                    $("#current").on('click', function(){
+                        torqueLayer.remove();
+                    })
+                    
+                    $("#ellis").on('click', function(){
+                        torqueLayer.remove();
+                    })
+                    
+                    $("#point").on('click', function(){
+                        torqueLayer.remove();
+                    })
+                    
+                    $("#heat").on('click', function(){
+                        torqueLayer.remove();
+                    })
+                })
+        })
+        
+        // create the static layers
+        cartodb.createLayer(map,layerSource, {legends:true})
+            .addTo(map)
+            .done(function(layer) {
+              var sublayer0 = layer.getSubLayer(0)
+              var sublayer1 = layer.getSubLayer(1)
+              createSelector(sublayer0);
+              sublayer1.hide();
+            
+              $("#choro").on('click', function() { 
+                    sublayer0.hide();
+                    sublayer1.show();
+                    cartodb.vis.Vis.addInfowindow(map, sublayer1, ['nhood', 'count', 'price', 'black', 'asian', 'latino', 'white', 'mixed'],{
+                        infowindowTemplate: $('#infowindow_template').html(),
+                        templateType: 'mustache'
+                        });
+                    heatStacked.hide();
+                    $('#map').append(choroStacked.render().el);
+                });
+            
+              $("#point").on('click', function() {
+                    sublayer0.show();
+                    sublayer0.setSQL('SELECT * FROM eviction_notices');
+                    sublayer1.hide();
+                    choroStacked.hide();
+                    heatStacked.hide();
+                });
+            
+              $("#current").on('click', function() {
+                    sublayer0.show();
+                    sublayer0.setSQL('SELECT * FROM eviction_notices WHERE file_year = 2015');
+                    sublayer1.hide();
+                    choroStacked.hide();
+                    heatStacked.hide();
+                });
+            
+               $("#ellis").on('click', function() {
+                    sublayer0.show();
+                    sublayer0.setSQL('SELECT * FROM eviction_notices WHERE ellis_act_withdrawal = true');
+                    sublayer1.hide();
+                    choroStacked.hide();
+                    heatStacked.hide();
+                });
+            
+              $("#heat").on('click', function() {
+                    sublayer0.show();
+                    sublayer0.setSQL('SELECT * FROM eviction_notices');
+                    sublayer1.hide();
+                    choroStacked.hide();
+                    $('#map').append(heatStacked.render().el);
+                });
+            
+              $("#torqueviz").on('click', function(){
+                    sublayer0.hide();
+                    sublayer1.hide();
+                    choroStacked.hide();
+                    heatStacked.hide();
+                    })
+            })
+            .error(function(err) {
+              console.log("error: " + err);
+            });
+        
+        function createSelector(layer) {
+          var cartocss = "";
+          var $options = $(".layer_selector").find("li");
+          $options.click(function(e) {
+            var $li = $(e.target);
+            var selected = $li.attr('data');
+
+            $options.removeClass('cartocss_selected');
+            $li.addClass('cartocss_selected');
+
+            cartocss = $('#'+selected).text();
+
+            layer.setCartoCSS(cartocss);
+          });
+        }        
+}
+        
+    // SQL to perform a spatial join on the data
+    
+    /* SELECT analysis_neighborhoods.the_geom, analysis_neighborhoods.nhood,
+        COUNT(*) as count
+        FROM analysis_neighborhoods, eviction_notices
+        WHERE ST_Intersects(eviction_notices.the_geom, analysis_neighborhoods.the_geom)
+        GROUP BY analysis_neighborhoods.the_geom, analysis_neighborhoods.nhood */
+
+    </script>
+  </body>
+</html>
