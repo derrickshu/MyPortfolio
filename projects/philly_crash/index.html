@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- CSS Imports -->
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.css" integrity="sha256-YR4HrDE479EpYZgeTkQfgVJq08+277UXxMLbi/YP69o=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <style>
+        body { margin:0; padding:0; }
+    </style>
+
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- =====================
+      Add elements in this space-->
+      <div class='map-overlay' id='features'><h2>Philadelphia Crashes Explorer</h2><div id='pd'>
+      <hr>
+      <p>This map shows car crashes of Philadelpia since 2013. Click the points to see more information.</p></div></div>
+      <hr>
+      <h3><span style="font-size: 20px; color: white;"><i class="fas fa-car-crash"></i></span>  All Records</h3>
+      <button id='Show_All' class="button2">Show</button>
+      <button id='Hide_All' class="button2">Reset</button>
+      <br>
+      <h3><span style="font-size: 20px; color: white;"><i class="far fa-calendar-alt"></i></span>  Filter by Time</h3>
+      <div>
+        <select id='mySelect'>
+          <option id='select' class="boldoption">select a year</option>
+          <option id='2013' class="boldoption">2013</option>
+          <option id='2014' class="boldoption">2014</option>
+          <option id='2015' class="boldoption">2015</option>
+          <option id='2016' class="boldoption">2016</option>
+          <option id='2017' class="boldoption">2017</option>
+        </select>
+        <select id='mySelect1'>
+          <option id='select' class="boldoption">select day of the week</option>
+          <option id='Monday' class="boldoption">Monday</option>
+          <option id='Tuesday' class="boldoption">Tuesday</option>
+          <option id='Wednesday' class="boldoption">Wednesday</option>
+          <option id='Thursday' class="boldoption">Thursday</option>
+          <option id='Friday' class="boldoption">Friday</option>
+          <option id='Saturday' class="boldoption">Saturday</option>
+          <option id='Sunday' class="boldoption">Sunday</option>
+        </select>
+      </div>
+
+      <h3><span style="font-size: 20px; color: white;"><i class="fas fa-hourglass-half"></i></span>  Filter by Time of the Day</h3>
+      <button id='morning' class="button3">Morning Rush</button>
+      <button id='noon' class="button3">Noon</button>
+      <button id='afternoon' class="button3">Evening Rush</button>
+      <button id='night' class="button3">Night</button>
+      <br>
+      <h3><span style="font-size: 20px; color: white;"><i class="fas fa-cloud-sun"></i></span>  Filter by weather</h3>
+      <div>
+        <select id='mySelect2'>
+          <option id='select' class="boldoption">Crashes by weather</option>
+          <option id='no adverse condition' class="boldoption">no adverse condition</option>
+          <option id='rain' class="boldoption">rain</option>
+          <option id='hail' class="boldoption">hail</option>
+          <option id='snow' class="boldoption">snow</option>
+          <option id='fog' class="boldoption">fog</option>
+          <option id='rain & fog' class="boldoption">rain & fog</option>
+          <option id='hail & fog' class="boldoption">hail & fog</option>
+          <option id='other' class="boldoption">other</option>
+        </select>
+      </div>
+      <br>
+      <div>
+        <select id='mySelect3'>
+          <option id='select' class="boldoption">Crashes by Illumination</option>
+          <option id='dark-no street lights' class="boldoption">dark-no street lights</option>
+          <option id='dark-street lights' class="boldoption">dark-street lights</option>
+          <option id='dawn' class="boldoption">dawn</option>
+          <option id='daylight' class="boldoption">daylight</option>
+          <option id='dusk' class="boldoption">dusk</option>
+          <option id='other' class="boldoption">other</option>
+        </select>
+      </div>
+      <br>
+      <hr>
+      <h4><span style="font-size: 5px; color: #EAF205;"><i class="fas fa-circle"></i></span> Fatal</h4>
+      <h4><span style="font-size: 5px; color: #66CDD9;"><i class="fas fa-circle"></i></span> Injury</h4>
+      <!--====================== -->
+    </div>
+    <!-- Map -->
+    <!-- <div id='before' class='map'></div>
+    <div id='after' class='map'></div>-->
+    <div id="map" class="map"></div>
+    <canvas id="myChart">MyChart</canvas>
+      </div>
+    </div>
+    <!-- Javascript Imports -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js" integrity="sha256-6BZRSENq3kxI4YYBDqJ23xg0r1GwTHEpvp3okdaIqBw=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore.js" integrity="sha256-O4179En8zabOlPYBNvGp8cF0uh0vnSZpW4Q6Ul1h+8c=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="js/setup.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

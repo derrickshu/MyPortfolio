@@ -1,0 +1,171 @@
+body {
+    padding: 0;
+    overflow: hidden;
+    font-family: -apple-system,  "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+
+body * {
+-webkit-touch-callout: none;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
+
+.map {
+    position: absolute;
+    right: 0px;
+    left: 340px;
+    height: 100%;
+    top: 0;
+}
+
+.sidebar {
+    position: absolute;
+    left: 0px;
+    width: 340px;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto;
+    padding: 20px;
+    padding-bottom: 60px;
+    background-color: #000;
+}
+
+
+.item {
+    padding: 10px;
+    background-color: #eee;
+}
+
+.item:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+.item-heading {
+    font-size: 18px;
+    margin-top: 0;
+    font-weight: bold;
+}
+
+.sort {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 340px;
+    background-color: #fff;
+    padding: 20px;
+}
+
+.sort-option {
+    margin-left: 10px;
+}
+
+.sort-option.selected {
+    border-bottom: 1px solid #ccc;
+}
+
+.sidebar nav.navbar-default {
+    border: 0;
+    border-radius: 0;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    margin: -14px -20px 20px;
+    padding: 10px 20px 15px;
+}
+
+.navbar-brand {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+
+.button2 {
+
+  width: 70px;
+  height: 30px;
+  margin: 0px;
+  background: black;
+  border: black;
+  color: white;
+  font-size: 0.9em;
+  font-family: arial, serif;
+  padding: 8px 4px;
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.boldoption {
+  width: 150px;
+	font-weight: bold;
+}
+
+.button2:hover {
+  background-color: white; /* Green */
+  color: black;
+}
+
+.button3 {
+
+  width: 70px;
+  height: 60px;
+  margin: 0px;
+  background: black;
+  border: black;
+  color: white;
+  font-size: 0.9em;
+  font-family: arial, serif;
+  padding: 8px 4px;
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.button3:hover {
+  background-color: white; /* Green */
+  color: black;
+}
+
+/* =============
+Media Queries
+============= */
+
+@media screen and (min-width: 480px) and (max-width: 800px) {
+    /*.item {
+        background-color: blue;
+    }*/
+}
+
+@media screen and (max-width: 479px) {
+    /*.item {
+        background-color: red;
+    }*/
+}
+
+
+h2 {
+  font-family: "Futura";
+  color: white;
+}
+
+h3 {
+  font-family: "Geneva";
+  color: white;
+}
+
+h4 {
+  font-family: "Geneva";
+  color: white;
+}
+
+p {
+  position: relative;
+  list-style: none;
+  padding-left: 10px;
+  padding-right: 80px;
+  font-family: 10px "Geneva";
+  color: white;
+
+}
