@@ -2,7 +2,7 @@
 
 Hi there! 
 
-Thanks for visit my portfolio repo and here's the [link](https://shuxingxing.xyz/).
+Thanks for visit my portfolio repo and here's the [link](http://www.shuxingxing.xyz/).
 
 Welcome to contact me and help me improve it!
 
